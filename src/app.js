@@ -5,8 +5,31 @@ const express = require("express"); //importing express module
 
 const app = express(); //creating an instance of express
 
+// app.get(["/ac", "/abc"], (req, res) => {
+//   res.send({
+//     firstName: "Vivek",
+//     lastName: "Kumar"
+//   });
+// });
+
+// app.get("/ab+c", (req, res) => {
+//   res.send({
+//     firstName: "Vivek",
+//     lastName: "Kumar"
+//   });
+// });
+
+// app.get(/^\/ab+c$/, (req, res) => {
+//   res.send("Hello abbbbbc from regex");
+// });
+
+// app.get("/ab*cd", (req, res) => {
+//   res.send("Hello");
+// });
+
 // this will only handle GET call to /user
-app.get("/user", (req,res) => {
+app.get("/user/:id", (req,res) => {
+  console.log("Incoming request: ", req.params);
   res.send({firstName : "Vivek", lastName: "Kumar"})
 })
 
