@@ -5,16 +5,32 @@ const express = require("express"); //importing express module
 
 const app = express(); //creating an instance of express
 
+// this will only handle GET call to /user
+app.get("/user", (req,res) => {
+  res.send({firstName : "Vivek", lastName: "Kumar"})
+})
+
+app.post("/user", (req,res) => {
+  //saving data to DB
+  res.send("Data saved successfully")
+})
+
+app.delete("/user", (req,res) => {
+  //saving data to DB
+  res.send("Data deleted successfully")
+})
+
+//this will match all the http methodapi calls to /hello
 app.use("/hello", (req, res) => {
     console.log("Incoming request: ", req.method, req.url); //logging incoming requests
     res.send("Hello hello hellokl!"); //sending response to the client
  }); //middleware to handle incoming requests
 
 
-app.use("/",(req, res) => {
-    console.log("Incoming request: ", req.method, req.url); //logging incoming requests
-    res.send("Namaste from dashbord"); //sending response to the client
- }); //middleware to handle incoming requests 
+// app.use("/",(req, res) => {
+//     console.log("Incoming request: ", req.method, req.url); //logging incoming requests
+//     res.send("Namaste from dashbord"); //sending response to the client
+//  }); //middleware to handle incoming requests
 
 
 
