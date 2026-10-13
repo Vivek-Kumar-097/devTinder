@@ -2,21 +2,23 @@ const express = require("express"); //importing express module
 
 const app = express(); //creating an instance of express
 
-const {adminAuth, userAuth} = require("./middlewares/auth"); //importing adminAuth middleware
+app.get("/getUserData", (req, res) => {
+ //Logic of DB call and get user data
 
-//Handle Auth Middleware for all type of requests GET, POST, PUT, DELETE, PATCH
-app.use("/admin", adminAuth);
+ try{
+   throw new Error("Database Connection Failed");
+   res.send("User Data Sent");
 
-app.get("/user",userAuth, (req, res) => {
-  res.send("User Route");
+ } catch(err){
+   res.status(500).send("Something Error contact support team!");
+ }
 })
 
-app.get("/admin/getAllData", (req, res) => {
-  res.send("All Data from Admin");
-});
-
-app.get("/admin/deleteUser", (req, res) => {
-  res.send("User Deleted from Admin");
+app.use("/", (err, req, res, next) => {
+  if(err) {
+    // log your error here
+    res.status(500).send("Something went wrong!");
+  }
 });
 
 app.listen(7777, () => { //starting the server on port 7777
