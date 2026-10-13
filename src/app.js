@@ -2,17 +2,23 @@ const express = require("express"); //importing express module
 
 const app = express(); //creating an instance of express
 
-app.use("/user", (req, res, next) => {
-  // Route handler for /user path
-  // res.send("Route Handler 1");
-  console.log("Handling request for /user path 1");
-  // res.send("Route Handler 1");
-  next(); // Call next() to pass control to the next route handler
-}, (req, res, next) => {
-   console.log("Handling request for /user path 2");
-   res.send("Route Handler 2");
-}); 
+const {adminAuth, userAuth} = require("./middlewares/auth"); //importing adminAuth middleware
 
-app.listen(7777, (req, res) => { //starting the server on port 7777
+//Handle Auth Middleware for all type of requests GET, POST, PUT, DELETE, PATCH
+app.use("/admin", adminAuth);
+
+app.get("/user",userAuth, (req, res) => {
+  res.send("User Route");
+})
+
+app.get("/admin/getAllData", (req, res) => {
+  res.send("All Data from Admin");
+});
+
+app.get("/admin/deleteUser", (req, res) => {
+  res.send("User Deleted from Admin");
+});
+
+app.listen(7777, () => { //starting the server on port 7777
   console.log("Server is running on port 7777");
 });
