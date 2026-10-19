@@ -20,6 +20,70 @@ app.post("/signup", async (req, res) => {
  }
 })
 
+// GET user by email - get a user by emailId from the database
+app.get("/user", async (req, res) => {
+  const emailId = req.body.emailId; //getting emailId from request body
+  try {
+    const user = await User.findOne({ emailId: emailId }); //fetching user from the database by emailId
+     if(!user) {
+      return res.status(404).send("User not found");
+    } else {
+      res.send(user);
+    }
+    // const user = await User.find({ emailId: emailId }); //fetching user from the database by emailId
+    // if(user.length === 0) {
+    //   return res.status(404).send("User not found");
+    // } else {
+    //   res.send(user);
+    // }
+  } catch (error) {
+    res.status(400).send("Error while fetching user: " + error.message);
+  }
+});
+
+//feed api - GET /feed - get all the users from the database
+app.get("/feed", async (req, res) => {
+  try {
+    const users = await User.find(); //fetching all users from the database
+    res.send(users);
+  } catch (error) {
+    res.status(400).send("Error while fetching users: " + error.message);
+  }
+});
+
+// DELETE user by id - delete a user by id from the database
+app.delete("/user", async (req, res) => {
+  const userId = req.body.userId;
+  try {
+    const user = await User.findByIdAndDelete(userId);
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+    res.send("User deleted successfully");
+  } catch (error) {
+    res.status(400).send("Error while deleting user: " + error.message);
+  }
+});
+
+// update data of the user
+app.patch("/user", async (req, res) => {
+  const userId = req.body.userId;
+  const updateData = req.body;
+
+  try {
+    const user = await User.findByIdAndUpdate({ _id: userId }, updateData, {
+      returnDocument: "before", //return the document before update 
+      runValidators: true, //run validators on the update data
+    });
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+    res.send("User updated successfully");
+  } catch (error) {
+    res.status(400).send("Error while updating user: " + error.message);
+  }
+});
+
 connectDB().then(() => {
     console.log("Connected to DB successfully");
     app.listen(7777, () => { //starting the server on port 7777
