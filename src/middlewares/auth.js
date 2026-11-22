@@ -1,27 +1,34 @@
-const adminAuth = (req, res, next) => {
-// Logic of checking if the request is authorised
-console.log("Admin Auth Middleware Invoked");
-  const token = "xyz";
-  const isAdminAuthorized = token === "xyz"; // Replace with your actual authorization logic
+const jwt = require('jsonwebtoken');
+const User = require('../models/user');
 
-  if(!isAdminAuthorized) {
-    return res.status(401).send("Unauthorized Access");
-  } else{
-    next(); // Call next() to pass control to the next route handler  
-  }
+const userAuth = async (req, res, next) => {
+  try {
+    // Read the token from the req cookies
+    const {token} =  req.cookies;
+    if(!token) {
+      throw new Error("Invalid Token !!!!");
+    }
+
+    // Validate the token
+
+    const decodedObj = await jwt.verify(token, "DEV@TINDER$799");
+
+     //find the user
+    const { _id} = decodedObj;   
+
+    const user = await User.findById(_id);
+
+    if(!user) {
+    throw new Error("User not found");
+    }
+
+    req.user = user; // Attach the user object to the request for further use in the route handler
+
+    next(); // Call next() to pass control to the next route handler
+
+    } catch (error) {
+      res.status(400).send("Error: " + error.message);
+    }
 }
 
-const userAuth = (req, res, next) => {
-// Logic of checking if the request is authorised
-console.log("User Auth Middleware Invoked");
-  const token = "xyz";
-  const isUserAuthorized = token === "xyz"; // Replace with your actual authorization logic
-
-  if(!isUserAuthorized) {
-    return res.status(401).send("Unauthorized Access");
-  } else{
-    next(); // Call next() to pass control to the next route handler  
-  }
-}
-
-module.exports = {adminAuth, userAuth};
+module.exports = { userAuth};
